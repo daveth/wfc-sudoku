@@ -51,4 +51,9 @@ export class SudokuCell {
     const projected = vector.scale(this.value.dot(vector));
     this._value = this.value.sub(projected);
   }
+
+  public couldBe(digit: Digit): boolean {
+    const query = SudokuCell.bases[digit];
+    return this.value.dot(query) > 0;
+  }
 }

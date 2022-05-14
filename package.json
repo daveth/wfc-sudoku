@@ -1,6 +1,7 @@
 {
   "name": "@daveth/wfc-sudoku",
   "version": "1.0.0",
+  "private": true,
   "license": "MIT",
   "main": "lib/index.ts",
   "types": "lib/index.d.ts",

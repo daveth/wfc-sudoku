@@ -1,9 +1,11 @@
-import { BasisVector } from "./basis-vector";
-import { LinearSum } from "./linear-vector";
+import { BasisVector } from "./basis";
+import { ComposedVector } from "./composed";
 
 /* -------------------------------------------------------------------------- */
 
 export interface Vector<T = void> {
+  eq(rhs: Vector<T>): boolean;
+
   magnitude(): number;
   scale(k: number): Vector<T>;
   unit(): Vector<T>;
@@ -25,11 +27,11 @@ export function isUnit<T>(vec: Vector<T>): vec is UnitVector<T> {
 /* -------------------------------------------------------------------------- */
 
 export function zero<T>(): Vector<T> {
-  return LinearSum.zero();
+  return ComposedVector.zero();
 }
 
 export function sum<T>(...values: Vector<T>[]): Vector<T> {
-  return LinearSum.from(...values.map((vec) => ({ vec, k: 1 })));
+  return ComposedVector.from(...values.map((vec) => ({ vec, k: 1 })));
 }
 
 let anonBases = 0;

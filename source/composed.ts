@@ -1,17 +1,17 @@
 import { Vector } from "./vector";
 
-export class LinearSum<T> implements Vector<T> {
+export class ComposedVector<T> implements Vector<T> {
   private constructor(private readonly data: ReadonlyMap<Vector<T>, number>) {}
 
   private decompose(): Array<{ vec: Vector<T>; k: number }> {
     return Array.from(this.data.entries()).flatMap(([vec, k]) => {
-      if (vec instanceof LinearSum) return vec.decompose();
+      if (vec instanceof ComposedVector) return vec.decompose();
       return { vec, k };
     });
   }
 
   public static zero() {
-    return new LinearSum(new Map());
+    return new ComposedVector(new Map());
   }
 
   public static from<T>(...values: { vec: Vector<T>; k: number }[]) {
@@ -23,14 +23,32 @@ export class LinearSum<T> implements Vector<T> {
     };
 
     for (const { vec, k } of values) {
-      if (vec instanceof LinearSum) vec.decompose().forEach(contribute);
+      if (vec instanceof ComposedVector) vec.decompose().forEach(contribute);
       else contribute({ vec, k });
     }
 
-    return new LinearSum(coefficients);
+    return new ComposedVector(coefficients);
   }
 
   /* ------------------------------------------------------------------------ */
+
+  //
+  public eq(that: Vector<T>): boolean {
+    if (that instanceof ComposedVector) {
+      if (this === that) return true;
+      if (this.data.size === 1) return that === Array.from(this.data.keys())[0];
+
+      const thisS = ComposedVector.from(...this.decompose());
+      const thatS = ComposedVector.from(...that.decompose());
+
+      for (const [vec, k] of thisS.data)
+        if (thatS.data.get(vec) !== k) return false;
+
+      return true;
+    }
+
+    return false;
+  }
 
   //
   public magnitude() {
@@ -55,17 +73,17 @@ export class LinearSum<T> implements Vector<T> {
   public scale(k: number) {
     const data = new Map(this.data.entries());
     for (const [vec, coef] of data) data.set(vec, coef * k);
-    return new LinearSum(data);
+    return new ComposedVector(data);
   }
 
   //
   public add(that: Vector<T>): Vector<T> {
-    return LinearSum.from({ vec: this, k: 1 }, { vec: that, k: 1 });
+    return ComposedVector.from({ vec: this, k: 1 }, { vec: that, k: 1 });
   }
 
   //
   public sub(that: Vector<T>): Vector<T> {
-    return LinearSum.from({ vec: this, k: 1 }, { vec: that, k: -1 });
+    return ComposedVector.from({ vec: this, k: 1 }, { vec: that, k: -1 });
   }
 
   //
