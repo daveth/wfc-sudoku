@@ -1,4 +1,4 @@
-import { Vector } from "./vector";
+import { Vector, UnitVector } from "./vector";
 
 export class ComposedVector<T> implements Vector<T> {
   private constructor(private readonly data: ReadonlyMap<Vector<T>, number>) {}
@@ -52,6 +52,8 @@ export class ComposedVector<T> implements Vector<T> {
 
   //
   public magnitude() {
+    if (this.data.size === 0) return 0;
+
     const squared = [...this.data.values()]
       .map((k) => k * k)
       .reduce((sum, k2) => sum + k2);
@@ -60,8 +62,8 @@ export class ComposedVector<T> implements Vector<T> {
   }
 
   //
-  public unit() {
-    return this.scale(1 / this.magnitude());
+  public unit(): UnitVector<T> {
+    return this.scale(1 / this.magnitude()) as UnitVector<T>;
   }
 
   //

@@ -24,7 +24,7 @@ export class BasisVector<T> implements UnitVector<T> {
     return this.scale(-1);
   }
 
-  public unit(): Vector<T> {
+  public unit(): UnitVector<T> {
     return this;
   }
 

@@ -8,7 +8,7 @@ export interface Vector<T = void> {
 
   magnitude(): number;
   scale(k: number): Vector<T>;
-  unit(): Vector<T>;
+  unit(): UnitVector<T>;
   neg(): Vector<T>;
 
   add(rhs: Vector<T>): Vector<T>;
