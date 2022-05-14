@@ -23,11 +23,9 @@ describe("Vector", function () {
     [e2, e3, false],
   ])("Basis vector equality makes sense", (a, b, r) => expect(a.eq(b)).toBe(r));
 
-  test("Vector addition identities", function () {
-    const x = e1.add(e2);
-    const y = x.sub(e2);
-    console.log(x.toString());
-    console.log(y.toString());
-    expect(e1.eq(y)).toBeTruthy();
-  });
+  test.each([
+    [e1.add(e2).sub(e2), e1],
+    [e1.scale(2).sub(e1), e1],
+    [e2.sub(e1).add(e3).add(e1), e2.add(e3)],
+  ])("Vector linearity", (val, res) => expect(val.eq(res)).toBeTruthy());
 });
