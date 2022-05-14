@@ -36,8 +36,8 @@ export class SudokuCell {
     return new SudokuCell(this.bases[digit]);
   }
 
-  public static oneOf(digits: Iterable<Digit>): SudokuCell {
-    return new SudokuCell(sum(...Array.from(digits).map((d) => this.bases[d])));
+  public static oneOf(...digits: Digit[]): SudokuCell {
+    return new SudokuCell(sum(...digits.map((d) => this.bases[d])));
   }
 
   /* ------------------------------------------------------------------------ */
@@ -47,9 +47,9 @@ export class SudokuCell {
   }
 
   public isNot(digit: Digit) {
-    const vector = SudokuCell.bases[digit];
-    const projected = vector.scale(this.value.dot(vector));
-    this._value = this.value.sub(projected);
+    const u = SudokuCell.bases[digit];
+    const p = u.scale(this.value.dot(u));
+    this._value = this.value.sub(p);
   }
 
   public couldBe(digit: Digit): boolean {

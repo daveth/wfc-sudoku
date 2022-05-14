@@ -31,7 +31,9 @@ export function zero<T>(): Vector<T> {
 }
 
 export function sum<T>(...values: Vector<T>[]): Vector<T> {
-  return ComposedVector.from(...values.map((vec) => ({ vec, k: 1 })));
+  return ComposedVector.from(
+    ...values.map((vec): [Vector<T>, number] => [vec, 1])
+  );
 }
 
 let anonBases = 0;

@@ -13,7 +13,8 @@ export class BasisVector<T> implements UnitVector<T> {
   /* ----------------------------------------------------------------------- */
 
   public eq(that: Vector<T>): boolean {
-    return this === that;
+    if (that instanceof BasisVector) return this === that;
+    return that.eq(this);
   }
 
   public magnitude(): 1 {
@@ -30,15 +31,15 @@ export class BasisVector<T> implements UnitVector<T> {
 
   public scale(k: number): Vector<T> {
     if (k === 1) return this;
-    return ComposedVector.from({ vec: this, k });
+    return ComposedVector.from([this, k]);
   }
 
   public add(that: Vector<T>): Vector<T> {
-    return ComposedVector.from({ vec: this, k: 1 }, { vec: that, k: 1 });
+    return ComposedVector.from([this, 1], [that, 1]);
   }
 
   public sub(that: Vector<T>): Vector<T> {
-    return ComposedVector.from({ vec: this, k: 1 }, { vec: that, k: -1 });
+    return ComposedVector.from([this, 1], [that, -1]);
   }
 
   public dot(that: Vector<T>) {
