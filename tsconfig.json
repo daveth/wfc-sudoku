@@ -1,7 +1,10 @@
 {
+  "include": ["source"],
+  "exclude": ["test", "node_modules"],
   "compilerOptions": {
     // Module & output options
     // =======================
+    "outDir": "lib",
     "target": "es2019",
     "module": "commonjs",
     "moduleResolution": "node",
