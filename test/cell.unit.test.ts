@@ -1,8 +1,9 @@
-import { SudokuCell } from "../source/cell";
+import { Cell } from "../source/cell";
+import { oneOf } from "../source/digit";
 
-describe("SudokuCell", function () {
+describe("Cell", function () {
   test("", function () {
-    const cell = SudokuCell.oneOf(1, 2, 3, 4);
+    const cell = new Cell(oneOf(1, 2, 3, 4));
     expect(cell.couldBe(4)).toBeTruthy();
 
     cell.isNot(4);

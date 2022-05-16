@@ -1,59 +1,27 @@
-import { Vector, basis, sum } from "./vector";
+import { Vector } from "./math/vector";
+import { Digit, knownValue } from "./digit";
 
-export type Digit = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+export class Cell {
+  private _state: Vector;
 
-function* count(min: number, max: number) {
-  for (let i = min; i <= max; i++) yield i;
-}
-
-function* digits() {
-  yield* count(1, 9) as Generator<Digit>;
-}
-
-function* map<T, U>(g: Iterable<T>, f: (e: T) => U): Generator<U> {
-  for (const e of g) yield f(e);
-}
-
-function toLookup<KT extends string | number, VT>(entries: Iterable<[KT, VT]>) {
-  type Res = { [K in KT]: VT };
-
-  return Array.from(entries)
-    .map(([k, v]) => ({ [k]: v }))
-    .reduce((res: Res, cur) => Object.assign(res, cur), {} as Res);
-}
-
-export class SudokuCell {
-  private static readonly bases = toLookup(map(digits(), (d) => [d, basis(d)]));
-  private constructor(private _value: Vector) {}
-
-  /* ------------------------------------------------------------------------ */
-
-  public static unknown(): SudokuCell {
-    return new SudokuCell(sum(...Object.values(this.bases)));
-  }
-
-  public static solved(digit: Digit) {
-    return new SudokuCell(this.bases[digit]);
-  }
-
-  public static oneOf(...digits: Digit[]): SudokuCell {
-    return new SudokuCell(sum(...digits.map((d) => this.bases[d])));
+  public constructor(state: Vector) {
+    this._state = state;
   }
 
   /* ------------------------------------------------------------------------ */
 
-  public get value() {
-    return this._value;
+  public get state() {
+    return this._state;
   }
 
-  public isNot(digit: Digit) {
-    const u = SudokuCell.bases[digit];
-    const p = u.scale(this.value.dot(u));
-    this._value = this.value.sub(p);
+  public isNot(value: Digit) {
+    const u = knownValue(value);
+    const p = u.scale(this.state.dot(u));
+    this._state = this.state.sub(p);
   }
 
-  public couldBe(digit: Digit): boolean {
-    const query = SudokuCell.bases[digit];
-    return this.value.dot(query) > 0;
+  public couldBe(value: Digit): boolean {
+    const query = knownValue(value);
+    return this.state.dot(query) > 0;
   }
 }
